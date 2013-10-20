@@ -14,10 +14,10 @@ trait WordFrequencyNode {
     "be","do", "go", "if", "in", "is", "it", "of", "on", "the", "to")
   val SENTENCE_SEPARATOR = " "
 
-  def sentenceAsList(sentence:String) =
+  private def sentenceAsList(sentence:String) =
           sentence.toLowerCase.split(SENTENCE_SEPARATOR).toList
 
-  def getWordFreq [T](xs: List[String]): Map[String,Int] =
+  private def getWordFreq [T](xs: List[String]): Map[String,Int] =
     (pack(xs.sortWith(_ < _)
       .filterNot(STOP_WORDS_LIST.contains(_))
     ) map (ys => (ys.head, ys.length))).toMap
@@ -29,6 +29,9 @@ trait WordFrequencyNode {
       first::pack(rest)
   }
 
+  def dataToMap(data: String):Map[String,Int] = getWordFreq(sentenceAsList(data))
+
+
 }
 
 class MapActor extends Actor with WordFrequencyNode{
@@ -39,6 +42,6 @@ class MapActor extends Actor with WordFrequencyNode{
   }
 
   def evaluateExpression(message: String): MapData =
-    MapData (getWordFreq(sentenceAsList(message)))
+    MapData (dataToMap(message))
 
 }
