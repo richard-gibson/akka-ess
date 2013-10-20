@@ -15,10 +15,9 @@ import scala.concurrent.Await
  * Time: 21:41
  */
 
-  sealed trait MapReduceMessage
-  case class MapData(dataList:  Map[String, Int]) extends
-  MapReduceMessage
-  case class Result() extends MapReduceMessage
+sealed trait MapReduceMessage
+case class MapData(dataList:  Map[String, Int]) extends MapReduceMessage
+case class Result() extends MapReduceMessage
 
 object MapReduceApplication extends App {
   val _system = ActorSystem("MapReduceApp")
@@ -41,8 +40,7 @@ object MapReduceApplication extends App {
   1 to 100000 foreach (x=>master ! sentences(rand.nextInt(sentences.length)))
 
   implicit val timeout = Timeout(5, SECONDS)
-  1 to 10  foreach (x=> {
-    Thread.sleep(50)
+  1 to 100  foreach (x=> {
     println(Await.result(master ? Result, timeout.duration))
   })
 
